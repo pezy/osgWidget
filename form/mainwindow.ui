@@ -29,6 +29,7 @@
     </property>
     <addaction name="actionDefault"/>
     <addaction name="actionSimple_Object"/>
+    <addaction name="actionColored_quad"/>
    </widget>
    <addaction name="menuExample"/>
   </widget>
@@ -49,6 +50,11 @@
   <action name="actionSimple_Object">
    <property name="text">
     <string>Simple Object</string>
+   </property>
+  </action>
+  <action name="actionColored_quad">
+   <property name="text">
+    <string>Colored quad</string>
    </property>
   </action>
  </widget>
