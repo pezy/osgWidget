@@ -3,10 +3,12 @@
 #include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/ShapeDrawable>
+#include <osg/TriangleFunctor>
 #include <osgDB/ReadFile>
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tessellator>
 
+#include "osg_utils.h"
 #include "osg_widget.h"
 #include "ui_mainwindow.h"
 
@@ -109,6 +111,32 @@ MainWindow::MainWindow(QWidget *parent)
     geom->addPrimitiveSet(new osg::DrawArrays(GL_POLYGON, 0, 8));
     osgUtil::Tessellator tessellator;
     tessellator.retessellatePolygons(*geom);
+    osg::ref_ptr<osg::Geode> root = new osg::Geode;
+    root->addDrawable(geom);
+    osg_widget_->setSceneData(root);
+  });
+
+  connect(ui->actionTriangle_Faces, &QAction::triggered, [this]() {
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(10);
+    (*vertices)[0].set(0.0f, 0.0f, 0.0f);
+    (*vertices)[1].set(0.0f, 0.0f, 1.0f);
+    (*vertices)[2].set(1.0f, 0.0f, 0.0f);
+    (*vertices)[3].set(1.0f, 0.0f, 1.5f);
+    (*vertices)[4].set(2.0f, 0.0f, 0.0f);
+    (*vertices)[5].set(2.0f, 0.0f, 1.0f);
+    (*vertices)[6].set(3.0f, 0.0f, 0.0f);
+    (*vertices)[7].set(3.0f, 0.0f, 1.5f);
+    (*vertices)[8].set(4.0f, 0.0f, 0.0f);
+    (*vertices)[9].set(4.0f, 0.0f, 1.0f);
+    osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array(1);
+    (*normals)[0].set(0.f, -1.f, 0.f);
+    osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+    geom->setVertexArray(vertices);
+    geom->setNormalArray(normals);
+    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    geom->addPrimitiveSet(new osg::DrawArrays(GL_QUAD_STRIP, 0, 10));
+    osg::TriangleFunctor<osg_util::FaceCollector> functor;
+    geom->accept(functor);
     osg::ref_ptr<osg::Geode> root = new osg::Geode;
     root->addDrawable(geom);
     osg_widget_->setSceneData(root);

@@ -32,6 +32,7 @@
     <addaction name="actionColored_quad"/>
     <addaction name="actionOctahedron"/>
     <addaction name="actionTessellator"/>
+    <addaction name="actionTriangle_Faces"/>
    </widget>
    <addaction name="menuExample"/>
   </widget>
@@ -67,6 +68,11 @@
   <action name="actionTessellator">
    <property name="text">
     <string>Tessellator</string>
+   </property>
+  </action>
+  <action name="actionTriangle_Faces">
+   <property name="text">
+    <string>Triangle Faces</string>
    </property>
   </action>
  </widget>
