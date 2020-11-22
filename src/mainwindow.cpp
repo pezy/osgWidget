@@ -5,6 +5,7 @@
 #include <osg/ShapeDrawable>
 #include <osgDB/ReadFile>
 #include <osgUtil/SmoothingVisitor>
+#include <osgUtil/Tessellator>
 
 #include "osg_widget.h"
 #include "ui_mainwindow.h"
@@ -74,7 +75,8 @@ MainWindow::MainWindow(QWidget *parent)
     (*vertices)[5].set(0.f, 0.f, -1.f);
     // const auto order = {3, 5, 4, 1, 5, 2, 3, 0, 4, 1};
     // osg::ref_ptr<osg::DrawElementsUInt> indices =
-    //     new osg::DrawElementsUInt(GL_TRIANGLE_STRIP, order.begin(), order.end());
+    //     new osg::DrawElementsUInt(GL_TRIANGLE_STRIP, order.begin(),
+    //     order.end());
     const auto order = {0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 1,
                         5, 2, 1, 5, 3, 2, 5, 4, 3, 5, 1, 4};
     osg::ref_ptr<osg::DrawElementsUInt> indices =
@@ -83,6 +85,30 @@ MainWindow::MainWindow(QWidget *parent)
     geom->setVertexArray(vertices);
     geom->addPrimitiveSet(indices);
     osgUtil::SmoothingVisitor::smooth(*geom);
+    osg::ref_ptr<osg::Geode> root = new osg::Geode;
+    root->addDrawable(geom);
+    osg_widget_->setSceneData(root);
+  });
+
+  connect(ui->actionTessellator, &QAction::triggered, [this]() {
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(8);
+    (*vertices)[0].set(0.0f, 0.0f, 0.0f);
+    (*vertices)[1].set(2.0f, 0.0f, 0.0f);
+    (*vertices)[2].set(2.0f, 0.0f, 1.0f);
+    (*vertices)[3].set(1.0f, 0.0f, 1.0f);
+    (*vertices)[4].set(1.0f, 0.0f, 2.0f);
+    (*vertices)[5].set(2.0f, 0.0f, 2.0f);
+    (*vertices)[6].set(2.0f, 0.0f, 3.0f);
+    (*vertices)[7].set(0.0f, 0.0f, 3.0f);
+    osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array(1);
+    (*normals)[0].set(0.0f, -1.0f, 0.0f);
+    osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
+    geom->setVertexArray(vertices.get());
+    geom->setNormalArray(normals.get());
+    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    geom->addPrimitiveSet(new osg::DrawArrays(GL_POLYGON, 0, 8));
+    osgUtil::Tessellator tessellator;
+    tessellator.retessellatePolygons(*geom);
     osg::ref_ptr<osg::Geode> root = new osg::Geode;
     root->addDrawable(geom);
     osg_widget_->setSceneData(root);
