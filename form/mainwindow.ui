@@ -30,6 +30,7 @@
     <addaction name="actionDefault"/>
     <addaction name="actionSimple_Object"/>
     <addaction name="actionColored_quad"/>
+    <addaction name="actionOctahedron"/>
    </widget>
    <addaction name="menuExample"/>
   </widget>
@@ -55,6 +56,11 @@
   <action name="actionColored_quad">
    <property name="text">
     <string>Colored quad</string>
+   </property>
+  </action>
+  <action name="actionOctahedron">
+   <property name="text">
+    <string>Octahedron</string>
    </property>
   </action>
  </widget>
